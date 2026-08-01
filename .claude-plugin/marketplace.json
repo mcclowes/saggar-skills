@@ -1,0 +1,14 @@
+{
+  "name": "saggar-skills",
+  "owner": {
+    "name": "Max Clayton Clowes",
+    "url": "https://github.com/mcclowes"
+  },
+  "plugins": [
+    {
+      "name": "saggar",
+      "source": "./",
+      "description": "Teach an agent to drive saggar, the macOS terminal manager, from inside one of its terminals: flag for attention, dock monitors, run one-shots, approve its own prompt, and read the project menu before interrupting."
+    }
+  ]
+}
