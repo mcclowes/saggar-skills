@@ -69,7 +69,7 @@ terminal does not authorize launching commands or approving prompts.
 | `saggar capabilities` | Compatibility alias for `saggar schema` |
 | `saggar read [id\|name] [--lines N\|--screen] [--json]` | Read bounded plain-text output from one terminal |
 | `saggar session [id\|name] [--json]` | Print one terminal's name, presentation, and turbo setting |
-| `saggar session [id\|name] set <name\|presentation\|turbo> <value>` | Change one of those settings; arming turbo needs the Settings ▸ CLI switch and never works on the calling terminal |
+| `saggar session [id\|name] set <name\|presentation\|turbo> <value>` | Change one of those settings; another terminal's name or presentation asks on the Mac first, and arming turbo needs the Settings ▸ CLI switch and never works on the calling terminal |
 | `saggar settings [--json]` / `settings get\|set\|reset <key>` | Read or change app preferences; guarded keys still need the Mac app |
 | `saggar explain [id\|name] [--json]` | Say why a terminal wears its status |
 | `saggar wait [id\|name] [--until <status>…\|--match <text>] [--timeout N] [--json]` | Block until a terminal settles, reaches a status, or prints a line |
@@ -114,8 +114,9 @@ saggar --reason "The test failure needs your input" focus "API tests"
 
 Saggar attributes the reason to the requesting terminal and shows a completion
 card even when permission is automatic. `Go back` restores navigation, not
-commands that have already run. Reads, `saggar add`, `attention`, `approve`, `session`,
-and `resume show` or `resume clear` don't prompt.
+commands that have already run. Reads, `saggar add`, `attention`, `approve`, `session`
+without `set`, `session set` on your own terminal, and `resume show` or `resume clear` don't
+prompt. `session set` on another terminal's name or presentation asks like `focus`.
 
 ## Durable custom resume
 
