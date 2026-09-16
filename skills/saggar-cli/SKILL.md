@@ -55,7 +55,7 @@ terminal does not authorize launching commands or approving prompts.
 | `saggar quick <command…>` | Run the command in a one-shot window beside the user's work |
 | `saggar agent <provider[.model]> <task…>` | Run an independent agent in a new terminal beside this one |
 | `saggar agent <provider> [options] -- <task…>` | Reuse or configure a terminal, including provider flags |
-| `saggar agent claude --team -- <task…>` | Run Claude with native teammates shown as Saggar terminals |
+| `saggar agent claude --team -- <task…>` | Experimental: run Claude with native teammates shown as Saggar terminals |
 | `saggar agent <provider> --queue -- <task…>` | Queue an agent until the project's active terminals, this one included, settle |
 | `saggar agent codex --observe -- <task…>` | Link a Codex observer, told not to edit, to this session |
 | `saggar agent codex --pair -- <task…>` | Link a Codex pairing partner to this session |
@@ -537,7 +537,10 @@ Knowing the shape of the boundary saves you probing it:
   terminal by id or unique name.
 - **Session management stays narrow.** `saggar agent` may create one terminal
   for delegated work. Claude's explicit `--team` mode may create provider-owned
-  child terminals. `close` is limited to idle terminals; there is no general `new` or `send` verb.
+  child terminals; it is experimental, because it stands in for tmux with a shim
+  and Claude Code has never promised the tmux calls it makes, so a Claude Code
+  update can break it. `close` is limited to idle terminals; there is no general
+  `new` or `send` verb.
 - **Every verb that acts is audited**, denials included
   (`~/.saggar/control-audit.jsonl`). Assume the user can see what you called.
 
