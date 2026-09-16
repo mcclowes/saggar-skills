@@ -23,6 +23,8 @@ brew install --cask mcclowes/saggar/saggar
 
 plus the `saggar` command, installed once from the app's settings. The skill checks for both before doing anything and stays silent when they're absent, so it's safe to install globally — an agent outside a saggar terminal just carries on.
 
+This plugin carries the skill and nothing else. The hooks that let saggar read Claude Code's presence, prompts, and permission requests are a separate plugin, `saggar-hooks`, which the app generates for your installed Claude Code version and installs from Settings > Agents. Install both to get the whole integration.
+
 ## Where this comes from
 
 The canonical copy lives in the saggar repo, next to the CLI it documents, so behavior changes and skill text move together; this repo is the public mirror. If the skill claims something the app doesn't do, open an issue here — the fix lands there first, then syncs.
