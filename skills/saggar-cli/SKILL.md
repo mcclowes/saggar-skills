@@ -60,6 +60,7 @@ terminal does not authorize launching commands or approving prompts.
 | `saggar agent codex --observe -- <task…>` | Link a Codex observer, told not to edit, to this session |
 | `saggar agent codex --pair -- <task…>` | Link a Codex pairing partner to this session |
 | `saggar message <text…>` | Message the linked pairing counterpart when it is idle |
+| `saggar message --to <id\|name> <text…>` | Send an attributed line to any terminal |
 | `saggar handoff` | Hand worktree ownership from the lead to the pairing partner |
 | `saggar add <path>` | Register a project without focusing it or opening a terminal |
 | `saggar close [--force] <id\|name>` | Close an idle terminal; `--force` closes a busy one |
@@ -252,9 +253,40 @@ saggar message "Check the migration's rollback path."
 saggar handoff
 ```
 
-Messages have no target argument: Saggar resolves only the linked counterpart and refuses to
+A bare `saggar message` has no target: Saggar resolves only the linked counterpart and refuses to
 type unless it is idle. Observers cannot message. `handoff` is lead-only, moves both sessions
 into the finishing phase, and tells Codex it may make the final changes, run checks, and commit.
+
+## Messaging a terminal
+
+`--to` sends the same attributed line to any terminal, linked or not — the one verb that puts
+words somewhere else:
+
+```sh
+saggar message --to 7c310000 the regression is in the retry backoff, not the parser
+saggar message --to "API review" ready for you when you are
+```
+
+`--to` has to come first, because everything after the target is the message; a `--to` further
+along is words you meant to send. The line arrives as `[<your terminal's name>] <message>`, so the
+reader can tell an agent from its user.
+
+What is running there is your problem, not Saggar's. An agent reads the line as a prompt and
+queues it if it is mid-turn. A shell runs it as a command. A foreground process gets it on stdin.
+Three things still refuse: a terminal that has gone, your own terminal (`attention` is how you
+speak about yourself), and a terminal showing a permission prompt — answering those is `saggar
+approve`'s job, and its guards exist on purpose.
+
+Every `--to` asks for execution consent on the Mac, and the prompt shows the target and the exact
+text. A pairing link is a standing agreement; naming a terminal is not.
+
+Habits worth keeping:
+
+- **Read before you speak.** `saggar read <id>` costs nothing and often answers the question you
+  were about to ask.
+- **Message the terminal, not the user.** A message lands in another agent's context; it does not
+  raise a flag. If a person needs to act, that is `attention`.
+- **Say what to look at.** The same rule `attention` follows. One line, the useful one.
 
 ## Raising attention
 
@@ -546,7 +578,9 @@ Knowing the shape of the boundary saves you probing it:
   child terminals; it is experimental, because it stands in for tmux with a shim
   and Claude Code has never promised the tmux calls it makes, so a Claude Code
   update can break it. `close` is limited to idle terminals unless the user
-  asked for `--force`; there is no general `new` or `send` verb.
+  asked for `--force`; there is no general `new` verb. `message --to` is the one
+  way to put words into another terminal: attributed, consented to on the Mac,
+  audited, and never into a waiting permission prompt.
 - **Every verb that acts is audited**, denials included
   (`~/.saggar/control-audit.jsonl`). Assume the user can see what you called.
 
