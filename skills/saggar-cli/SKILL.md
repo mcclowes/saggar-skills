@@ -62,7 +62,7 @@ terminal does not authorize launching commands or approving prompts.
 | `saggar message <text…>` | Message the linked pairing counterpart when it is idle |
 | `saggar handoff` | Hand worktree ownership from the lead to the pairing partner |
 | `saggar add <path>` | Register a project without focusing it or opening a terminal |
-| `saggar close <id\|name>` | Close an idle terminal |
+| `saggar close [--force] <id\|name>` | Close an idle terminal; `--force` closes a busy one |
 | `saggar list [--json]` | List the project menu with a stable short id for each terminal |
 | `saggar status [--json]` | Alias for `saggar list` |
 | `saggar schema [command…]` | Print the clispec v0.2 command schema, optionally narrowed to one command subtree |
@@ -236,6 +236,9 @@ running agent, which keeps the directory and flags it launched with, and a
 terminal waiting on a permission prompt — answering prompts is `saggar
 approve`'s job and its guards are there on purpose. `close` still refuses any
 running child; stop its work rather than silently killing it.
+`saggar close --force <id>` closes it anyway and ends whatever is running. Use
+it only when the user asked for that terminal to go; it still asks on the Mac
+like any close, and the audit log records it as a forced close.
 
 `--flags` accepts one trusted shell fragment and inserts it after the selected
 provider and model arguments, before the safely quoted task. Use it only for
@@ -554,10 +557,11 @@ Knowing the shape of the boundary saves you probing it:
   for delegated work. Claude's explicit `--team` mode may create provider-owned
   child terminals; it is experimental, because it stands in for tmux with a shim
   and Claude Code has never promised the tmux calls it makes, so a Claude Code
-  update can break it. `close` is limited to idle terminals; there is no general
-  `new` or `send` verb. `agent --session-id` is the one way to put words into
-  another terminal, and it is narrow on purpose: an agent of the provider you
-  named, no permission prompt on screen, and the words are its task.
+  update can break it. `close` is limited to idle terminals unless the user
+  asked for `--force`; there is no general `new` or `send` verb.
+  `agent --session-id` is the one way to put words into another terminal, and
+  it is narrow on purpose: an agent of the provider you named, no permission
+  prompt on screen, and the words are its task.
 - **Every verb that acts is audited**, denials included
   (`~/.saggar/control-audit.jsonl`). Assume the user can see what you called.
 
