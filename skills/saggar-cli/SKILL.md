@@ -211,34 +211,22 @@ shell `cd` does not retarget them. To work in another project, run `monitor` or
 `quick` from one of that project's Saggar terminals. For an agent terminal,
 pass an absolute `--cwd` instead:
 
-An agent can start in a configured new terminal, or reuse an existing one:
+An agent can start in a configured new terminal, or reuse an existing idle one:
 
 ```sh
 saggar agent codex --title "API review" --cwd /repos/api -- fix the tests
 saggar agent codex --session-id 7c310000 --cwd /repos/api -- review the diff
-saggar agent claude --session-id 7c310000 -- what did that test actually assert?
 saggar agent claude --flags '--permission-mode plan --add-dir ../shared' -- fix the tests
 saggar close 7c310000
 ```
 
-Use the short IDs from `saggar list`. `--session-id` does one of two things,
-depending on what the terminal is doing:
-
-- **An idle shell** takes the launch command line, as it always has.
-- **A terminal already running the agent you named** takes the task as a
-  prompt, the way the user would type it. Its context is the point — a session
-  that has been reading this codebase for an hour is worth addressing rather
-  than restarting. The agent queues the prompt if it's mid-turn.
-
-Anything else running still refuses: a different provider, an agent saggar only
-recognises, or an ordinary command. So do `--cwd` and `--flags` against a
-running agent, which keeps the directory and flags it launched with, and a
-terminal waiting on a permission prompt — answering prompts is `saggar
-approve`'s job and its guards are there on purpose. `close` still refuses any
-running child; stop its work rather than silently killing it.
+Use the short IDs from `saggar list`. Reuse and close refuse a terminal with a
+running child process; stop its work first rather than silently killing it.
 `saggar close --force <id>` closes it anyway and ends whatever is running. Use
 it only when the user asked for that terminal to go; it still asks on the Mac
 like any close, and the audit log records it as a forced close.
+To put words into a terminal that is already busy, reach for `saggar message`
+rather than trying to reuse it.
 
 `--flags` accepts one trusted shell fragment and inserts it after the selected
 provider and model arguments, before the safely quoted task. Use it only for
@@ -559,9 +547,6 @@ Knowing the shape of the boundary saves you probing it:
   and Claude Code has never promised the tmux calls it makes, so a Claude Code
   update can break it. `close` is limited to idle terminals unless the user
   asked for `--force`; there is no general `new` or `send` verb.
-  `agent --session-id` is the one way to put words into another terminal, and
-  it is narrow on purpose: an agent of the provider you named, no permission
-  prompt on screen, and the words are its task.
 - **Every verb that acts is audited**, denials included
   (`~/.saggar/control-audit.jsonl`). Assume the user can see what you called.
 
