@@ -134,7 +134,7 @@ saggar resume clear
 Repeat `--env KEY=VALUE` only for non-sensitive values the resume command
 needs. Saggar rejects token, password, secret, API key, and private-key names.
 The binding stays untrusted until the user approves its exact command, working
-directory, and environment in Settings ▸ Terminals. Do not ask the user to
+directory, and environment in Settings ▸ Sessions. Do not ask the user to
 approve it. An untrusted binding restores as an idle shell for manual use, and
 a native provider session ID always takes precedence.
 
@@ -559,7 +559,8 @@ saggar explain 7c310000 --json
 Use it before reporting that saggar has a terminal's status wrong, and quote
 the `because` line when you do. The rule words are stable: `exit-code`,
 `agent-call`, `hook-claim`, `prompt-cue`, `bell`, `watch-cue`, `notification`,
-`command-running`, `background-work`, `turn-ended`, `turn-running`, `recent-output`, and `quiet`.
+`command-running`, `background-work`, `turn-ended`, `turn-running`, `idle-prompt`,
+`recent-output`, and `quiet`.
 
 ## What the CLI deliberately cannot do
 
