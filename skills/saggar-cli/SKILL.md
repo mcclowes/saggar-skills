@@ -452,6 +452,13 @@ happened:
 saggar agent codex --queue -- "review the diff this session leaves behind"
 ```
 
+When the user asks you to queue sessions, they mean this flag. Pass `--queue` on
+every launch, the first included: the sessions then run one at a time, each
+waiting for the ones before it. Without it every agent starts at once and they
+run side by side, however you describe them afterwards. Launch several without
+`--queue` only when the user asked for parallel work and the write scopes don't
+overlap.
+
 This is delegation, not fire-and-forget process spawning. Before calling it:
 
 - Give the child a bounded task, expected output, and whether it may edit.
