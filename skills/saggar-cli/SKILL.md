@@ -53,6 +53,7 @@ terminal does not authorize launching commands or approving prompts.
 | `saggar monitor <command…>` | Dock a monitor in this project running the command |
 | `saggar monitor --discreet <command…>` | Same, docked at half weight until the user points at it |
 | `saggar quick <command…>` | Run the command in a one-shot window beside the user's work |
+| `saggar monitor\|quick --cwd <path> <command…>` | Same, starting in that directory |
 | `saggar agent <provider[.model]> <task…>` | Run an independent agent in a new terminal beside this one |
 | `saggar agent <provider> [options] -- <task…>` | Reuse or configure a terminal, including provider flags |
 | `saggar agent claude --team -- <task…>` | Experimental: run Claude with native teammates shown as Saggar terminals |
@@ -86,6 +87,8 @@ terminal does not authorize launching commands or approving prompts.
 `monitor` and `quick` take the rest of the line, so `saggar monitor npm run dev`
 works without quoting. Quote when spacing matters. `attention` joins its words
 the same way, and `--note` and `--discreet` may sit anywhere among them.
+`--cwd <path>` has to come before the command; later on the line, it's the
+command's own flag.
 
 A call takes up to one status beat (~2s) to land. Workspace navigation (`focus`,
 project opens, `close`, and teammate focus or close) then
@@ -208,9 +211,15 @@ terminal's directory, not from a later `cd` in its shell.
 `monitor`, `quick`, and `agent` resolve their default project and working
 directory from the calling Saggar terminal identified by `SAGGAR_SESSION`.
 They do not infer either value from the CLI process's current directory, so a
-shell `cd` does not retarget them. To work in another project, run `monitor` or
-`quick` from one of that project's Saggar terminals. For an agent terminal,
-pass an absolute `--cwd` instead:
+shell `cd` does not retarget them. Pass `--cwd` to start somewhere else; a
+relative path starts from the calling terminal's directory. The new terminal
+still belongs to the caller's project, so to work in another project, run the
+command from one of that project's Saggar terminals:
+
+```sh
+saggar monitor --cwd packages/web npm run dev
+saggar quick --cwd /repos/api git pull
+```
 
 An agent can start in a configured new terminal, or reuse an existing idle one:
 
