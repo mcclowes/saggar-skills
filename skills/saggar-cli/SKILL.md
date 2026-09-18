@@ -147,12 +147,16 @@ a native provider session ID always takes precedence.
 without a running Saggar app. Pass one or more options to update the manifest:
 
 ```sh
+saggar config --name "Example site"
+saggar config --clear-name
 saggar config --docs handbook
 saggar config --clear-docs
 saggar config command --name "Example site" --monitor --browser --pin -- npm run start
 ```
 
-The documentation folder must be a relative path inside the project. Run
+The name is shared with everyone who checks out the project; clearing it falls
+back to the folder's name. The documentation folder must be a relative path
+inside the project. Run
 `saggar init` first when
 the folder doesn't have a manifest.
 
