@@ -10,12 +10,12 @@ deserves a terminal the user can inspect, redirect, or take over.
 
 ```sh
 saggar agent codex "investigate the relay test failure; report findings only"
-saggar agent claude.opus5 "review the authentication change; do not edit files"
+saggar agent claude.opus55 "review the authentication change; do not edit files"
 ```
 
 The new terminal inherits this terminal's project and working directory. It
 does not steal focus. Provider names are `claude`, `codex`, `antigravity`, `pi`,
-`opencode`, and `copilot`; append a model alias such as `claude.opus5` or
+`opencode`, and `copilot`; append a model alias such as `claude.opus55` or
 `codex.gpt-6-astra` when the model matters. The task is shell-quoted by saggar, so pass the task as ordinary
 words rather than building a provider command yourself.
 
