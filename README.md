@@ -13,7 +13,7 @@ As a Claude Code plugin, so updates arrive with the marketplace:
 /plugin install saggar@saggar-skills
 ```
 
-Or just copy the file: [`skills/saggar-cli/SKILL.md`](skills/saggar-cli/SKILL.md) into `~/.claude/skills/saggar-cli/SKILL.md`. Any agent runner that reads `SKILL.md` files can use it the same way.
+Or copy the folder: [`skills/saggar-cli/`](skills/saggar-cli/) into `~/.claude/skills/saggar-cli/`. Take the whole folder, not just `SKILL.md`: the verb detail lives in `references/` beside it. Any agent runner that reads `SKILL.md` files can use it the same way.
 
 You'll also want saggar itself:
 
