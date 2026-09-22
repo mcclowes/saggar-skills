@@ -1,6 +1,7 @@
 ---
 name: saggar-cli
-description: Drive saggar, the macOS terminal manager, from inside one of its terminals using the `saggar` command — list and read terminals, raise attention, start monitors and one-shots, delegate durable work to a new agent terminal, focus a terminal, and clear your own permission prompt. Use when you are blocked and want the user's eye, when a process should run where they can see it, when work needs an independent user-owned agent session, or when you want to inspect which terminals are busy before speaking up.
+description: Drives saggar, the macOS terminal manager, from inside one of its terminals using the `saggar` command — lists and reads terminals, raises attention, starts monitors and one-shots, delegates durable work to a new agent terminal, focuses a terminal, and clears the agent's own permission prompt. Use when the agent is blocked and wants the user's eye, when a process should run where the user can see it, when work needs an independent user-owned agent session, or before speaking up, to see which terminals are busy.
+compatibility: macOS only. Needs the Saggar app and its `saggar` command, and works only inside a Saggar terminal.
 ---
 
 # Driving saggar from a terminal
@@ -12,7 +13,7 @@ You know which line of a four-minute test run matters; no heuristic will.
 
 ## Check the channel exists first
 
-Every command except `saggar init`, `saggar config`, `saggar settings`, `saggar hooks`, `saggar turns`, `saggar schema`, `saggar help`, and `saggar <path>` needs three things:
+Every command except `saggar init`, `saggar config`, `saggar settings`, `saggar hooks`, `saggar turns`, `saggar schema`, `saggar capabilities`, `saggar help`, `saggar --version`, and `saggar <path>` needs three things:
 saggar running, the shim installed (the user does that once from Settings ▸ CLI), and a
 `SAGGAR_SESSION` in the environment naming the terminal you are standing in.
 
