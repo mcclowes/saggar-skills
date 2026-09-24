@@ -59,7 +59,7 @@ saggar explain 7c310000 --json
 ```
 
 Use it before reporting that saggar has a terminal's status wrong, and quote
-the `because` line when you do. The rule words are stable: `exit-code`,
+the `because` line when you do. The rule words are stable: `exit-code`, `clipboard-read`,
 `agent-call`, `hook-claim`, `prompt-cue`, `bell`, `watch-cue`, `notification`,
 `command-running`, `background-work`, `turn-ended`, `turn-running`, `idle-prompt`,
 `recent-output`, and `quiet`.
