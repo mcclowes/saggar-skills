@@ -37,7 +37,8 @@ is blocked, use the agent's normal approval flow for the exact authorized
 command or continue without Saggar.
 
 Never use Saggar to route around a denied action, sandbox restriction,
-Auto-review refusal, or pending user decision. Authorization to inspect a
+Auto-review refusal, or pending user decision. Schedule jobs with
+`saggar job add`, never by writing `.saggar/jobs/` yourself. Authorization to inspect a
 terminal does not authorize launching commands or approving prompts.
 
 ## What the CLI deliberately cannot do
@@ -195,6 +196,7 @@ window and do not repeat its contents unless the task requires it.
 | `saggar monitor --discreet <command…>` | Same, docked at half weight until the user points at it |
 | `saggar quick <command…>` | Run the command in a one-shot window beside the user's work |
 | `saggar monitor\|quick --cwd <path> <command…>` | Same, starting in that directory |
+| `saggar job add [--name <name>] "<cron>" <command…>` | Ask the user to schedule a command in this project; nothing is saved until they approve it on the Mac |
 | `saggar agent <provider[.model]> <task…>` | Run an independent agent in a new terminal beside this one |
 | `saggar agent <provider> [options] -- <task…>` | Reuse or configure a terminal, including provider flags |
 | `saggar agent claude --team -- <task…>` | Experimental: run Claude with native teammates shown as Saggar terminals |

@@ -44,6 +44,22 @@ Neither is a substitute for running a command yourself. Use these when the
 output belongs on the user's screen rather than in your context — you do not
 get the output back.
 
+## Scheduled jobs
+
+`saggar job add` asks the user to schedule a command in the calling terminal's
+project. The request waits for a card on the Mac with no countdown and no
+session-wide consent, because the job keeps running after this terminal is gone.
+The call blocks until the user answers, up to two minutes, and prints the next
+run on success. Quote the cron expression as one word, and put `--name` first:
+
+```sh
+saggar job add --name "Nightly deps" "0 3 * * *" npm outdated
+saggar job add @hourly git fetch --all
+```
+
+The job opens a background terminal in the project root on each run. To pause,
+edit, or delete it, send the user to Jobs; the CLI can only ask to add one.
+
 ## Automation lifecycle
 
 Use `add` when automation needs the Project menu populated without moving the
