@@ -185,7 +185,7 @@ window and do not repeat its contents unless the task requires it.
 | Command | What it does |
 | --- | --- |
 | `saggar init` | Declare the current folder as a project in `.saggar/project.json` |
-| `saggar config [options]` | Read or update the current project's shared name and docs folder |
+| `saggar config [options]` | Read or update the current project's shared name and docs folder, and this Mac's icon and editor |
 | `saggar config command [options] -- <command…>` | Add or update a project command, its view, and its pin |
 | `saggar hooks [--json]` | Report each provider's presence hooks, the file they live in, and anything still blocking them |
 | `saggar hooks install\|remove <provider>` | Install or remove saggar's hooks for one provider — only when the user asks |

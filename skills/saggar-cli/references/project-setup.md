@@ -19,6 +19,19 @@ inside the project. Run
 `saggar init` first when
 the folder doesn't have a manifest.
 
+`--icon <emoji>`, `--clear-icon`, and `--ide <id|default>` change this Mac's
+record of the project rather than the shared manifest, so they need Saggar
+running with the project already open:
+
+```sh
+saggar config --icon 🧪
+saggar config --ide default
+saggar config --ide xcode
+```
+
+`default` follows the editor chosen in Settings ▸ Projects. Pick another
+editor only when the project's technology needs it.
+
 The `command` form writes `.saggar/commands.md`. Use one of `--primary`,
 `--companion`, `--monitor`, `--background`, or `--quick` to choose where it
 opens. Add `--browser` or `--simulator` when running the command should reveal
