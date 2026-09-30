@@ -10,6 +10,7 @@ read-only verbs when you need the terminal itself:
 
 ```sh
 saggar session 7c310000     # its name, presentation, and turbo setting
+saggar inspect 7c310000     # latest turn, pending prompt, and resume readiness
 saggar read 7c310000        # what it has printed
 saggar explain 7c310000     # why it wears the status it does
 ```
@@ -63,6 +64,23 @@ the `because` line when you do. The rule words are stable: `exit-code`, `clipboa
 `agent-call`, `hook-claim`, `prompt-cue`, `bell`, `watch-cue`, `notification`,
 `command-running`, `background-work`, `turn-ended`, `turn-running`, `idle-prompt`,
 `recent-output`, and `quiet`.
+
+## Inspect work and recovery
+
+`saggar inspect` combines a live status with the latest recorded turn and the
+resume path Saggar can see:
+
+```sh
+saggar inspect 7c310000
+saggar inspect 7c310000 --json
+```
+
+The request excerpt is one line, capped at 120 characters. The result reports
+turn state and edited-file count, prompt and queued-launch state, and whether
+the provider identity or an approved custom binding supports a resume. It
+never returns a provider session ID, custom command, environment values, or a
+full transcript. A missing ledger means no turn is recorded; it doesn't prove
+the session is done.
 
 ## Turns
 

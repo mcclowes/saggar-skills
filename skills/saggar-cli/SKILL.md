@@ -168,6 +168,11 @@ Use the short id from `list` when another terminal's output would answer the
 question. A name is accepted when it resolves uniquely; an ambiguous name is
 refused with candidates instead of guessing.
 
+Use `saggar inspect <id|name>` to check one terminal's latest turn, queued
+launch, prompt state, and resume readiness. Its request excerpt is limited to
+one line, and it never returns a full transcript, provider session ID, or
+custom resume command. Use `read` when the excerpt isn't enough.
+
 ```sh
 saggar read                 # the calling terminal's last 80 lines
 saggar read 7c310000        # another terminal by short id
@@ -213,6 +218,7 @@ window and do not repeat its contents unless the task requires it.
 | `saggar schema [command…]` | Print the clispec v0.2 command schema, optionally narrowed to one command subtree |
 | `saggar capabilities` | Compatibility alias for `saggar schema` |
 | `saggar read [id\|name] [--lines N\|--screen] [--json]` | Read bounded plain-text output from one terminal |
+| `saggar inspect [id\|name] [--json]` | Inspect current work and resume readiness without returning a transcript |
 | `saggar session [id\|name] [--json]` | Print one terminal's name, presentation, and turbo setting |
 | `saggar session [id\|name] set <name\|presentation\|turbo> <value>` | Change one of those settings; another terminal's name or presentation asks on the Mac first, and arming turbo needs the Settings ▸ CLI switch and never works on the calling terminal |
 | `saggar settings [--json]` / `settings get\|set\|reset <key>` | Read or change app preferences; guarded keys still need the Mac app |
@@ -272,7 +278,7 @@ beside this file; read the one that matches what you are about to do:
 
 - [references/running-commands.md](references/running-commands.md): Read this before `saggar monitor`, `saggar quick`, `saggar add`, or reusing and closing terminals with `saggar agent` and `saggar close`.
 - [references/delegation.md](references/delegation.md): Read this before `saggar agent`, an observer or pairing session, `saggar message`, or `saggar handoff`.
-- [references/observing.md](references/observing.md): Read this for `saggar wait`, `saggar explain`, `saggar turns`, or a `saggar session <id>` line in a message.
+- [references/observing.md](references/observing.md): Read this for `saggar inspect`, `saggar wait`, `saggar explain`, `saggar turns`, or a `saggar session <id>` line in a message.
 - [references/project-setup.md](references/project-setup.md): Read this for `saggar config`, `saggar hooks`, or `saggar resume`.
 
 ## A worked shape
