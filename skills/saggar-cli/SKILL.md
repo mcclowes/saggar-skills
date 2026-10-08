@@ -171,18 +171,24 @@ refused with candidates instead of guessing.
 Use `saggar inspect <id|name>` to check one terminal's latest turn, queued
 launch, prompt state, and resume readiness. Its request excerpt is limited to
 one line, and it never returns a full transcript, provider session ID, or
-custom resume command. Use `read` when the excerpt isn't enough.
+custom resume command. Use `read --conversation` when the excerpt isn't enough:
+it returns an agent's last few requests and replies, with tool traffic counted
+rather than shown, which a terminal tail rarely makes clear.
 
 ```sh
 saggar read                 # the calling terminal's last 80 lines
 saggar read 7c310000        # another terminal by short id
 saggar read 7c310000 --lines 200
 saggar read 7c310000 --screen
+saggar read 7c310000 --conversation            # last 3 requests and replies
+saggar read 7c310000 --conversation --turns 8
 saggar read 7c310000 --json
 ```
 
 `read` returns plain text, defaults to an 80-line tail, and accepts at most 500
-lines. `--screen` returns only the rows currently painted. Terminal output may
+lines. `--screen` returns only the rows currently painted. `list` marks each terminal
+`· unread` when it holds a result the user hasn't seen and `· quiet 3d` once it's
+been quiet an hour or more. Terminal output may
 contain credentials or other private material, so ask for the smallest useful
 window and do not repeat its contents unless the task requires it.
 
@@ -212,12 +218,12 @@ window and do not repeat its contents unless the task requires it.
 | `saggar message --to <id\|name> <text…>` | Send an attributed line to any terminal |
 | `saggar handoff` | Hand worktree ownership from the lead to the pairing partner |
 | `saggar add <path>` | Register a project without focusing it or opening a terminal |
-| `saggar close [--force] <id\|name>` | Close an idle terminal; `--force` closes a busy one |
+| `saggar close [--force] <id\|name>` | Close an idle terminal, including an agent resting at its prompt; `--force` closes a busy one |
 | `saggar list [--json]` | List the project menu with a stable short id for each terminal |
 | `saggar status [--json]` | Alias for `saggar list` |
 | `saggar schema [command…]` | Print the clispec v0.2 command schema, optionally narrowed to one command subtree |
 | `saggar capabilities` | Compatibility alias for `saggar schema` |
-| `saggar read [id\|name] [--lines N\|--screen] [--json]` | Read bounded plain-text output from one terminal |
+| `saggar read [id\|name] [--lines N\|--screen\|--conversation [--turns N]] [--json]` | Read bounded output, or an agent's recent requests and replies, from one terminal |
 | `saggar inspect [id\|name] [--json]` | Inspect current work and resume readiness without returning a transcript |
 | `saggar session [id\|name] [--json]` | Print one terminal's name, presentation, and turbo setting |
 | `saggar session [id\|name] set <name\|presentation\|turbo> <value>` | Change one of those settings; another terminal's name or presentation asks on the Mac first, and arming turbo needs the Settings ▸ CLI switch and never works on the calling terminal |
