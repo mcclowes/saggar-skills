@@ -110,6 +110,13 @@ Habits that keep the flag meaning something:
 
 ## Approving your own prompt
 
+An intercepted command is different from a provider's terminal permission menu.
+When a pre-tool hook says Saggar intercepted a command, stop and wait for the
+user to approve that held command from its Saggar card. `saggar approve` doesn't
+approve the card. After approval, Saggar tells the agent to retry the exact
+command; the grant works once and expires after ten minutes. Don't retry a
+modified command or treat an absent terminal prompt as approval.
+
 `saggar approve` types the default choice into the permission prompt waiting in
 your terminal — the same answer the user's own tick sends. It is the one verb
 that answers rather than asks, and it always acts on your session; it takes no
