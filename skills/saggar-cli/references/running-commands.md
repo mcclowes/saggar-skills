@@ -55,9 +55,12 @@ run on success. Quote the cron expression as one word, and put `--name` first:
 ```sh
 saggar job add --name "Nightly deps" "0 3 * * *" npm outdated
 saggar job add @hourly git fetch --all
+saggar job add "@once 2026-10-14 09:00" npm run release:check
 ```
 
-The job opens a background terminal in the project root on each run. To pause,
+`@once YYYY-MM-DD HH:MM` runs a single time, in the Mac's local time, and then
+deletes the job; a time that has already passed is refused. The job opens a
+background terminal in the project root on each run. To pause,
 edit, or delete it, send the user to Jobs; the CLI can only ask to add one.
 
 ## Automation lifecycle
