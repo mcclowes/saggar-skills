@@ -13,7 +13,7 @@ You know which line of a four-minute test run matters; no heuristic will.
 
 ## Check the channel exists first
 
-Every command except `saggar init`, `saggar config`, `saggar settings`, `saggar hooks`, `saggar turns`, `saggar schema`, `saggar capabilities`, `saggar help`, `saggar --version`, and `saggar <path>` needs three things:
+Every command except `saggar init`, `saggar config`, `saggar settings`, `saggar hooks`, `saggar turns`, `saggar focused`, `saggar schema`, `saggar capabilities`, `saggar help`, `saggar --version`, and `saggar <path>` needs three things:
 saggar running, the shim installed (the user does that once from Settings ▸ CLI), and a
 `SAGGAR_SESSION` in the environment naming the terminal you are standing in.
 
@@ -21,8 +21,8 @@ saggar running, the shim installed (the user does that once from Settings ▸ CL
 [ -n "$SAGGAR_SESSION" ] && command -v saggar >/dev/null
 ```
 
-If that fails, you are not in a saggar terminal. Carry on with the task and say
-nothing about it — an absent saggar is not an error worth reporting to the user.
+If that fails, skip session commands and carry on silently. `focused` can still
+be read outside a terminal when Saggar and its CLI are available.
 The same goes for exit code 3 at runtime, which means there was nobody to ask.
 
 ## Respect the agent's permission boundary
@@ -160,20 +160,27 @@ can see whether the user is already dealing with something louder:
 
 ```sh
 saggar list            # short id, status, project, name, and agent
-saggar list --json     # the same menu as a snapshot object, for parsing
+saggar list --json     # full snapshot; project needed fields before loading it
 ```
 
 `saggar status` is an alias for compatibility. Use `list` in new calls.
 
 The JSON is one snapshot object; its `sessions` array carries each terminal's
 `id`, `projectName`, `projectPath`, `name`, `status` (a `kind` plus any
-`exitCode`), `agent`, `promptWaiting`, `lastActivityAt`, git state, and a short
-`transcriptTail` of its screen. If two other terminals already read needs-you,
+`exitCode`), `agent`, `promptWaiting`, `lastActivityAt`, git state, and
+`transcriptTail`. It can also include full conversation data: use plain `list`
+for status checks, or project only needed fields from JSON before loading it
+into context. Read a selected terminal with bounded `inspect` or `read`.
+If two other terminals already read needs-you,
 a third flag is noise; finish, leave a `--note`, and let the user come to you.
 
 Use the short id from `list` when another terminal's output would answer the
 question. A name is accepted when it resolves uniquely; an ambiguous name is
 refused with candidates instead of guessing.
+
+Use `saggar focused` when the question concerns the terminal in the key window's
+main pane. It works outside a Saggar terminal and returns metadata without
+output or conversation; see [references/observing.md](references/observing.md).
 
 Use `saggar inspect <id|name>` to check one terminal's latest turn, queued
 launch, prompt state, and resume readiness. Its request excerpt is limited to
@@ -227,6 +234,7 @@ window and do not repeat its contents unless the task requires it.
 | `saggar add <path>` | Register a project without focusing it or opening a terminal |
 | `saggar close [--force] <id\|name>` | Close an idle terminal, including an agent resting at its prompt; `--force` closes a busy one |
 | `saggar list [--json]` | List the project menu with a stable short id for each terminal |
+| `saggar focused [--json]` | Read metadata for the terminal in the key window's main pane, without needing `SAGGAR_SESSION` |
 | `saggar status [--json]` | Alias for `saggar list` |
 | `saggar schema [command…]` | Print the clispec v0.2 command schema, optionally narrowed to one command subtree |
 | `saggar capabilities` | Compatibility alias for `saggar schema` |
@@ -291,7 +299,7 @@ beside this file; read the one that matches what you are about to do:
 
 - [references/running-commands.md](references/running-commands.md): Read this before `saggar monitor`, `saggar quick`, `saggar add`, or reusing and closing terminals with `saggar agent` and `saggar close`.
 - [references/delegation.md](references/delegation.md): Read this before `saggar agent`, an observer or pairing session, `saggar message`, or `saggar handoff`.
-- [references/observing.md](references/observing.md): Read this for `saggar inspect`, `saggar wait`, `saggar explain`, `saggar turns`, or a `saggar session <id>` line in a message.
+- [references/observing.md](references/observing.md): Read this for `saggar focused`, `saggar inspect`, `saggar wait`, `saggar explain`, `saggar turns`, or a `saggar session <id>` line in a message.
 - [references/project-setup.md](references/project-setup.md): Read this for `saggar config`, `saggar hooks`, or `saggar resume`.
 
 ## A worked shape

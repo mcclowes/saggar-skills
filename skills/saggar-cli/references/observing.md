@@ -1,5 +1,33 @@
 # Watching other terminals
 
+## Keep status reads compact
+
+Use plain `saggar list` to find terminal IDs and statuses. Its JSON snapshot can
+include full conversations for many terminals. When structured metadata is
+needed, project only the fields needed for the task before loading it into
+context. For example, with `jq`:
+
+```sh
+saggar list --json | jq '{sessions: [.sessions[] | {id, projectPath, name, status}]}'
+```
+
+Use `inspect` for a selected terminal's work state, or bounded `read` when its
+output or conversation is needed.
+
+## Find the focused terminal
+
+```sh
+saggar focused
+saggar focused --json
+```
+
+This reads the app's focused-terminal mirror without the command spool or a
+`SAGGAR_SESSION`. It reports ID, name, agent, status, project, and git metadata;
+it never includes terminal output or conversation. It observes focus without
+changing it. Exit 3 means Saggar isn't running or its mirror is unavailable;
+exit 1 means the key window has no terminal focused. Neither means the calling
+terminal is selected.
+
 ## A `saggar session <id>` line is someone pointing at a terminal
 
 The user can drag a terminal from saggar's project menu into a chat, which
