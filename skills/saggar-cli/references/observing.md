@@ -1,5 +1,33 @@
 # Watching other terminals
 
+## Keep status reads compact
+
+Use plain `saggar list` to find terminal IDs and statuses. Its JSON snapshot can
+include full conversations for many terminals. When structured metadata is
+needed, project only the fields needed for the task before loading it into
+context. For example, with `jq`:
+
+```sh
+saggar list --json | jq '{sessions: [.sessions[] | {id, projectPath, name, status}]}'
+```
+
+Use `inspect` for a selected terminal's work state, or bounded `read` when its
+output or conversation is needed.
+
+## Find the focused terminal
+
+```sh
+saggar focused
+saggar focused --json
+```
+
+This reads the app's focused-terminal mirror without the command spool or a
+`SAGGAR_SESSION`. It reports ID, name, agent, status, project, and git metadata;
+it never includes terminal output or conversation. It observes focus without
+changing it. Exit 3 means Saggar isn't running or its mirror is unavailable;
+exit 1 means the key window has no terminal focused. Neither means the calling
+terminal is selected.
+
 ## A `saggar session <id>` line is someone pointing at a terminal
 
 The user can drag a terminal from saggar's project menu into a chat, which
@@ -10,6 +38,7 @@ read-only verbs when you need the terminal itself:
 
 ```sh
 saggar session 7c310000     # its name, presentation, and turbo setting
+saggar inspect 7c310000     # latest turn, pending prompt, and resume readiness
 saggar read 7c310000        # what it has printed
 saggar explain 7c310000     # why it wears the status it does
 ```
@@ -63,6 +92,23 @@ the `because` line when you do. The rule words are stable: `exit-code`, `clipboa
 `agent-call`, `hook-claim`, `prompt-cue`, `bell`, `watch-cue`, `notification`,
 `command-running`, `background-work`, `turn-ended`, `turn-running`, `idle-prompt`,
 `recent-output`, and `quiet`.
+
+## Inspect work and recovery
+
+`saggar inspect` combines a live status with the latest recorded turn and the
+resume path Saggar can see:
+
+```sh
+saggar inspect 7c310000
+saggar inspect 7c310000 --json
+```
+
+The request excerpt is one line, capped at 120 characters. The result reports
+turn state and edited-file count, prompt and queued-launch state, and whether
+the provider identity or an approved custom binding supports a resume. It
+never returns a provider session ID, custom command, environment values, or a
+full transcript. A missing ledger means no turn is recorded; it doesn't prove
+the session is done.
 
 ## Turns
 
