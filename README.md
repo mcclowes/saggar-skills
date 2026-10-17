@@ -28,3 +28,19 @@ This plugin carries the skill and nothing else. The hooks that let saggar read C
 ## Where this comes from
 
 The canonical copy lives in the saggar repo, next to the CLI it documents, so behavior changes and skill text move together; this repo is the public mirror. If the skill claims something the app doesn't do, open an issue here — the fix lands there first, then syncs.
+
+## Validate manifests
+
+With Claude Code 2.1.302 installed, run:
+
+```sh
+claude plugin validate --strict .claude-plugin/marketplace.json
+claude plugin validate --strict .claude-plugin/plugin.json
+```
+
+The Validate manifests CI check runs these commands on pushes to main and pull
+requests. It installs that exact validator version in temporary storage and uses
+isolated Claude configuration. Strict mode rejects warnings as well as errors.
+Validation needs no authentication or model call and does not install the plugin.
+This checks manifest structure; skill behavior and synchronization with the
+canonical private checkout are separate checks.

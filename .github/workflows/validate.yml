@@ -1,0 +1,39 @@
+name: Validate manifests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: manifests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    env:
+      CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1"
+      DISABLE_AUTOUPDATER: "1"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24"
+
+      - name: Install pinned validator
+        run: npm install --prefix "$RUNNER_TEMP/saggar-validator" --no-save --no-package-lock --no-audit --no-fund @anthropic-ai/claude-code@2.1.302
+
+      - name: Validate marketplace and plugin
+        env:
+          CLAUDE_CONFIG_DIR: ${{ runner.temp }}/saggar-validator-config
+        run: |
+          "$RUNNER_TEMP/saggar-validator/node_modules/.bin/claude" plugin validate --strict .claude-plugin/marketplace.json
+          "$RUNNER_TEMP/saggar-validator/node_modules/.bin/claude" plugin validate --strict .claude-plugin/plugin.json
