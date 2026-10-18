@@ -1,0 +1,8 @@
+{
+  "related": [
+    {
+      "repo": "mcclowes/saggar-desktop",
+      "relation": "Public mirror of the saggar-cli skill maintained in Sources/saggar/Skills/saggar-cli; behavior changes land in saggar-desktop first."
+    }
+  ]
+}
