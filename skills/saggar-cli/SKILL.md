@@ -221,7 +221,7 @@ window and do not repeat its contents unless the task requires it.
 | `saggar monitor --discreet <command…>` | Same, docked at half weight until the user points at it |
 | `saggar quick <command…>` | Run the command in a one-shot window beside the user's work |
 | `saggar monitor\|quick --cwd <path> <command…>` | Same, starting in that directory |
-| `saggar job add [--name <name>] "<cron>\|@once YYYY-MM-DD HH:MM" <command…>` | Ask the user to schedule a command in this project, repeating or once; nothing is saved until they approve it on the Mac |
+| `saggar job add [--name <name>] "<cron>\|@once YYYY-MM-DD HH:MM" <command…>` | Ask the user to schedule a command in this terminal's project, or from home if it has no project, repeating or once; nothing is saved until they approve it on the Mac |
 | `saggar agent <provider[.model]> <task…>` | Run an independent agent in a new terminal beside this one |
 | `saggar agent <provider> [options] -- <task…>` | Reuse or configure a terminal, including provider flags |
 | `saggar agent claude --team -- <task…>` | Experimental: run Claude with native teammates shown as Saggar terminals |
