@@ -19,9 +19,9 @@ inside the project. Run
 `saggar init` first when
 the folder doesn't have a manifest.
 
-`--icon <emoji>`, `--clear-icon`, and `--ide <id|default>` change this Mac's
-record of the project rather than the shared manifest, so they need Saggar
-running with the project already open:
+`--icon <emoji>` and `--clear-icon` update the shared project emoji.
+`--ide <id|default>` changes this Mac's editor preference. These options need
+Saggar running with the project already open:
 
 ```sh
 saggar config --icon 🧪
