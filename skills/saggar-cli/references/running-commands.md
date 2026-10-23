@@ -47,7 +47,8 @@ get the output back.
 ## Scheduled jobs
 
 `saggar job add` asks the user to schedule a command in the calling terminal's
-project. The request waits for a card on the Mac with no countdown and no
+project. A terminal without a project creates a user-level job instead, which
+runs from the home directory. The request waits for a card on the Mac with no countdown and no
 session-wide consent, because the job keeps running after this terminal is gone.
 The call blocks until the user answers, up to two minutes, and prints the next
 run on success. Quote the cron expression as one word, and put `--name` first:
@@ -60,7 +61,7 @@ saggar job add "@once 2026-10-14 09:00" npm run release:check
 
 `@once YYYY-MM-DD HH:MM` runs a single time, in the Mac's local time, and then
 deletes the job; a time that has already passed is refused. The job opens a
-background terminal in the project root on each run. To pause,
+background terminal in the project root, or home for a user-level job, on each run. To pause,
 edit, or delete it, send the user to Jobs; the CLI can only ask to add one.
 
 ## Automation lifecycle
