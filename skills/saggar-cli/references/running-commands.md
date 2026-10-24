@@ -48,7 +48,7 @@ get the output back.
 
 `saggar job add` asks the user to schedule a command in the calling terminal's
 project. The request waits for a card on the Mac with no countdown and no
-session-wide consent, because the job keeps running after this terminal is gone.
+reusable consent; approval applies only to the request shown.
 The call blocks until the user answers, up to two minutes, and prints the next
 run on success. Quote the cron expression as one word, and put `--name` first:
 

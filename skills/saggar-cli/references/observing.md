@@ -12,7 +12,27 @@ saggar list --json | jq '{sessions: [.sessions[] | {id, projectPath, name, statu
 ```
 
 Use `inspect` for a selected terminal's work state, or bounded `read` when its
-output or conversation is needed.
+output or conversation is needed. `list` marks each terminal `· unread` when it
+holds a result the user hasn't seen and `· quiet 3d` once it's been quiet an
+hour or more.
+
+## Read output and conversations
+
+```sh
+saggar read                 # the calling terminal's last 80 lines
+saggar read 7c310000        # another terminal by short id
+saggar read 7c310000 --lines 200
+saggar read 7c310000 --screen
+saggar read 7c310000 --conversation            # last 3 requests and replies
+saggar read 7c310000 --conversation --turns 8
+saggar read 7c310000 --json
+```
+
+`read` returns plain text, defaults to an 80-line tail, and accepts at most 500
+lines. `--screen` returns only the rows currently painted. Use `--conversation`
+when `inspect`'s one-line excerpt isn't enough: it returns an agent's last few
+requests and replies, with tool traffic counted rather than shown, which a
+terminal tail rarely makes clear.
 
 ## Find the focused terminal
 
