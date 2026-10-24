@@ -176,35 +176,14 @@ a third flag is noise; finish, leave a `--note`, and let the user come to you.
 
 Use the short id from `list` when another terminal's output would answer the
 question. A name is accepted when it resolves uniquely; an ambiguous name is
-refused with candidates instead of guessing.
+refused with candidates instead of guessing. `saggar read <id>` returns a
+bounded tail or, with `--conversation`, an agent's recent requests and replies;
+`inspect` gives the latest turn without a transcript; and `focused` names the
+key window's terminal. See [references/observing.md](references/observing.md).
 
-Use `saggar focused` when the question concerns the terminal in the key window's
-main pane. It works outside a Saggar terminal and returns metadata without
-output or conversation; see [references/observing.md](references/observing.md).
-
-Use `saggar inspect <id|name>` to check one terminal's latest turn, queued
-launch, prompt state, and resume readiness. Its request excerpt is limited to
-one line, and it never returns a full transcript, provider session ID, or
-custom resume command. Use `read --conversation` when the excerpt isn't enough:
-it returns an agent's last few requests and replies, with tool traffic counted
-rather than shown, which a terminal tail rarely makes clear.
-
-```sh
-saggar read                 # the calling terminal's last 80 lines
-saggar read 7c310000        # another terminal by short id
-saggar read 7c310000 --lines 200
-saggar read 7c310000 --screen
-saggar read 7c310000 --conversation            # last 3 requests and replies
-saggar read 7c310000 --conversation --turns 8
-saggar read 7c310000 --json
-```
-
-`read` returns plain text, defaults to an 80-line tail, and accepts at most 500
-lines. `--screen` returns only the rows currently painted. `list` marks each terminal
-`· unread` when it holds a result the user hasn't seen and `· quiet 3d` once it's
-been quiet an hour or more. Terminal output may
-contain credentials or other private material, so ask for the smallest useful
-window and do not repeat its contents unless the task requires it.
+Terminal output may contain credentials or other private material, so ask for
+the smallest useful window and do not repeat its contents unless the task
+requires it.
 
 ## The verbs
 
