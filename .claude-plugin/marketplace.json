@@ -1,6 +1,6 @@
 {
   "name": "saggar-skills",
-  "description": "Agent skills for Saggar, the macOS terminal manager.",
+  "description": "Skills for agents working inside the Saggar macOS terminal manager.",
   "owner": {
     "name": "Max Clayton Clowes",
     "url": "https://github.com/mcclowes"

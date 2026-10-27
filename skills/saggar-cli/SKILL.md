@@ -24,6 +24,8 @@ saggar running, the shim installed (the user does that once from Settings ▸ CL
 If that fails, skip session commands and carry on silently. `focused` can still
 be read outside a terminal when Saggar and its CLI are available.
 The same goes for exit code 3 at runtime, which means there was nobody to ask.
+After installing a skill in an open Claude Code session, use `/reload-skills`
+to discover it, including a newly created skills folder.
 
 ## Respect the agent's permission boundary
 
@@ -54,7 +56,7 @@ Knowing the shape of the boundary saves you probing it:
   `session`, and the read-only `read`, `explain`, and `wait` may identify another
   terminal by id or unique name.
 - **Session management stays narrow.** `saggar agent` may create one terminal
-  for delegated work. Claude's explicit `--team` mode may create provider-owned
+  for delegated work. Saggar's explicit `--team` mode for Claude may create provider-owned
   child terminals; it is experimental, because it stands in for tmux with a shim
   and Claude Code has never promised the tmux calls it makes, so a Claude Code
   update can break it. `close` is limited to idle terminals unless the user
@@ -176,35 +178,14 @@ a third flag is noise; finish, leave a `--note`, and let the user come to you.
 
 Use the short id from `list` when another terminal's output would answer the
 question. A name is accepted when it resolves uniquely; an ambiguous name is
-refused with candidates instead of guessing.
+refused with candidates instead of guessing. `saggar read <id>` returns a
+bounded tail or, with `--conversation`, an agent's recent requests and replies;
+`inspect` gives the latest turn without a transcript; and `focused` names the
+key window's terminal. See [references/observing.md](references/observing.md).
 
-Use `saggar focused` when the question concerns the terminal in the key window's
-main pane. It works outside a Saggar terminal and returns metadata without
-output or conversation; see [references/observing.md](references/observing.md).
-
-Use `saggar inspect <id|name>` to check one terminal's latest turn, queued
-launch, prompt state, and resume readiness. Its request excerpt is limited to
-one line, and it never returns a full transcript, provider session ID, or
-custom resume command. Use `read --conversation` when the excerpt isn't enough:
-it returns an agent's last few requests and replies, with tool traffic counted
-rather than shown, which a terminal tail rarely makes clear.
-
-```sh
-saggar read                 # the calling terminal's last 80 lines
-saggar read 7c310000        # another terminal by short id
-saggar read 7c310000 --lines 200
-saggar read 7c310000 --screen
-saggar read 7c310000 --conversation            # last 3 requests and replies
-saggar read 7c310000 --conversation --turns 8
-saggar read 7c310000 --json
-```
-
-`read` returns plain text, defaults to an 80-line tail, and accepts at most 500
-lines. `--screen` returns only the rows currently painted. `list` marks each terminal
-`· unread` when it holds a result the user hasn't seen and `· quiet 3d` once it's
-been quiet an hour or more. Terminal output may
-contain credentials or other private material, so ask for the smallest useful
-window and do not repeat its contents unless the task requires it.
+Terminal output may contain credentials or other private material, so ask for
+the smallest useful window and do not repeat its contents unless the task
+requires it.
 
 ## The verbs
 
@@ -272,10 +253,9 @@ Opening a project through the CLI shows its project page without launching a
 shell or startup commands. Request command execution separately when needed.
 
 Command launches, teammate input (`message`), `handoff`, and setting a resume command
-require separate execution consent. The Mac offers **Allow once** or **Allow for this session**.
-A session grant ends when the terminal closes or restarts, or Saggar quits;
-the user can revoke it in **Settings ▸ CLI ▸ Command execution**. Navigation's
-countdown and immediate settings never grant execution permission. A grant
+require separate execution consent for every request. The Mac offers **Allow once**;
+approval covers only the request shown. Navigation's countdown and immediate
+settings never grant execution permission. Approval
 does not authorize bypassing an agent's own restrictions. The file transport
 still uses a self-reported session ID; these controls do not authenticate the
 calling process or enforce sandbox isolation.
