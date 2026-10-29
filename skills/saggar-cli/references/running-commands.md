@@ -109,3 +109,39 @@ rather than trying to reuse it.
 `--flags` accepts one trusted shell fragment and inserts it after the selected
 provider and model arguments, before the safely quoted task. Use it only for
 provider options the user asked for; shell operators in the fragment are live.
+
+## Preserve pending work during cleanup
+
+Use `saggar inventory --json` and inspect immediately before closing. Idle is not done.
+Queued launches, prompts, reminders, unsent drafts, and dependent work keep a session
+open, including with `close --force`. Use `saggar cancel <id>` only when the user
+explicitly wants to cancel that work. Never infer cancellation from a cleanup request.
+
+## Recovering closed sessions
+
+`close` returns a recovery ID. `history` lists the last 30 days of durable archives,
+including queued tasks. Recovery recreates the session and its pending work paused,
+preserving stable identities, settings, and ordering. It does not start a process.
+Review the recovered task, then use Resume or Resume queue in the Mac app.
+
+```sh
+saggar history --project /repos/api --search "original task" --since 2026-10-28 --json
+saggar restore <recovery-id>
+saggar restore --batch <batch-id>
+saggar restore --batch last
+```
+
+For a cleanup operation, preview the mechanical protections, select only sessions whose
+requests and results you have reviewed, and apply the chosen IDs as one undoable batch:
+
+```sh
+saggar cleanup --preview
+saggar inspect <id> --json
+saggar cleanup --apply <id> <other-id>
+```
+
+Eligibility is a mechanical guard, not proof that the work is complete. Apply rechecks
+current queue membership and session lifetime after consent; any unsafe target refuses
+the batch. Never substitute cancellation or force for a refusal. Undo through the returned
+batch ID, or Sessions → Recently closed sessions → Undo this cleanup. Missing original
+blockers are shown for review and never cause recovered work to execute automatically.

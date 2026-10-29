@@ -8,7 +8,7 @@ needed, project only the fields needed for the task before loading it into
 context. For example, with `jq`:
 
 ```sh
-saggar list --json | jq '{sessions: [.sessions[] | {id, projectPath, name, status}]}'
+saggar inventory --json
 ```
 
 Use `inspect` for a selected terminal's work state, or bounded `read` when its

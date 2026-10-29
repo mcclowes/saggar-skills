@@ -21,9 +21,11 @@ saggar running, the shim installed (the user does that once from Settings ▸ CL
 [ -n "$SAGGAR_SESSION" ] && command -v saggar >/dev/null
 ```
 
-If that fails, skip session commands and carry on silently. `focused` can still
-be read outside a terminal when Saggar and its CLI are available.
-The same goes for exit code 3 at runtime, which means there was nobody to ask.
+If that fails, skip optional session commands. If the user requested a command
+that needs the channel, report what's missing. `focused` can still be read
+outside a terminal when Saggar and its CLI are available. `config --icon`,
+`config --ide`, and `config command --pin` also need the running app and channel;
+the other config edits write project files directly.
 After installing a skill in an open Claude Code session, use `/reload-skills`
 to discover it, including a newly created skills folder.
 
@@ -34,9 +36,13 @@ can fail in Codex's workspace sandbox. With execution consent, `quick`, `monitor
 and `agent` launch separate processes with the Mac user's permissions; they do
 not inherit the calling agent's sandbox or approval policy. Execution consent
 is separate from workspace navigation and must be granted in the Mac UI.
-Do not request broad access to the spool just to read status. If the channel
-is blocked, use the agent's normal approval flow for the exact authorized
-command or continue without Saggar.
+Do not request broad access to the spool. If a sandbox blocks a command needed
+for the user's task, use the agent's normal approval flow to retry the exact
+authorized command outside the sandbox. A failed request write means that
+request wasn't sent; it doesn't mean Saggar is absent or the command is invalid.
+If approval is denied or unavailable, report the block. Optional status checks
+can be skipped. A timeout after posting is different: its outcome is unknown,
+so don't blindly repeat a mutation.
 
 Never use Saggar to route around a denied action, sandbox restriction,
 Auto-review refusal, or pending user decision. Schedule jobs with
@@ -73,10 +79,11 @@ Knowing the shape of the boundary saves you probing it:
 | 0 | Done |
 | 1 | Understood, and saggar refused or could not do it |
 | 2 | The arguments did not parse |
-| 3 | Nobody to ask — saggar is not running, or this is not a saggar terminal |
+| 3 | No confirmed reply: missing session, inaccessible channel, or reply timeout |
 
-Treat 3 as "the feature is not available here" and move on silently. Treat 1 as
-worth reading the message on stderr once, not worth retrying.
+Read stderr on 3: a sandbox-blocked write can use exact-command approval as
+described above; a missing session needs the correct terminal; a timeout leaves
+the outcome unknown. Treat 1 as worth reading once, not worth retrying.
 
 ## Raising attention
 
@@ -154,6 +161,19 @@ Habits:
   answer didn't land. Calling again won't help (a re-answer of the same prompt
   is refused by fingerprint); raise a flag instead.
 
+## Closing is not cancellation
+
+Idle describes the process, not whether the user's work is done. A queued session can
+look like an empty shell. Before cleanup, use `saggar inventory --json`, then
+`saggar inspect <id> --json` immediately before each close. Keep anything with a queued
+launch, queued or held prompts, reminders, an unsent draft, or dependent work.
+Missing or unclear evidence means keep it open. Confirm completion from the recent
+request and result; age, a clean tree, and an empty transcript do not prove completion.
+
+`close --force` only overrides running processes. It never authorizes discarding pending
+instructions. `saggar cancel <id>` explicitly cancels pending work and is only for a task
+the user asked to cancel; a request to close completed sessions does not authorize it.
+
 ## List and read terminals before interrupting
 
 `saggar list` is what makes the channel worth having rather than merely
@@ -161,6 +181,7 @@ usable. It prints one line per terminal — status, project, name, agent — so 
 can see whether the user is already dealing with something louder:
 
 ```sh
+saggar inventory --json # compact metadata, pending work, and mechanical close eligibility
 saggar list            # short id, status, project, name, and agent
 saggar list --json     # full snapshot; project needed fields before loading it
 ```
@@ -189,51 +210,9 @@ requires it.
 
 ## The verbs
 
-| Command | What it does |
-| --- | --- |
-| `saggar init` | Declare the current folder as a project in `.saggar/project.json` |
-| `saggar config [options]` | Read or update the current project's shared name and docs folder, and this Mac's icon and editor |
-| `saggar config command [options] -- <command…>` | Add or update a project command, its view, and its pin |
-| `saggar hooks [--json]` | Report each provider's presence hooks, the file they live in, and anything still blocking them |
-| `saggar hooks install\|remove <provider>` | Install or remove saggar's hooks for one provider — only when the user asks |
-| `saggar attention "why"` | Flag this terminal as needing the user, with the reason |
-| `saggar attention --note "why"` | Same, as a look-when-free note that makes no claim |
-| `saggar monitor <command…>` | Dock a monitor in this project running the command |
-| `saggar monitor --discreet <command…>` | Same, docked at half weight until the user points at it |
-| `saggar quick <command…>` | Run the command in a one-shot window beside the user's work |
-| `saggar monitor\|quick --cwd <path> <command…>` | Same, starting in that directory |
-| `saggar job add [--name <name>] "<cron>\|@once YYYY-MM-DD HH:MM" <command…>` | Ask the user to schedule a command in this terminal's project, or from home if it has no project, repeating or once; nothing is saved until they approve it on the Mac |
-| `saggar agent <provider[.model]> <task…>` | Run an independent agent in a new terminal beside this one |
-| `saggar agent <provider> [options] -- <task…>` | Reuse or configure a terminal, including provider flags |
-| `saggar agent claude --team -- <task…>` | Experimental: run Claude with native teammates shown as Saggar terminals |
-| `saggar agent <provider> --queue -- <task…>` | Queue an agent until the project's active terminals, this one included, settle |
-| `saggar agent codex --observe -- <task…>` | Link a Codex observer, told not to edit, to this session |
-| `saggar agent codex --pair -- <task…>` | Link a Codex pairing partner to this session |
-| `saggar message <text…>` | Message the linked pairing counterpart when it is idle |
-| `saggar message --to <id\|name> <text…>` | Send an attributed line to any terminal |
-| `saggar handoff` | Hand worktree ownership from the lead to the pairing partner |
-| `saggar add <path>` | Register a project without focusing it or opening a terminal |
-| `saggar close [--force] <id\|name>` | Close an idle terminal, including an agent resting at its prompt; `--force` closes a busy one |
-| `saggar list [--json]` | List the project menu with a stable short id for each terminal |
-| `saggar focused [--json]` | Read metadata for the terminal in the key window's main pane, without needing `SAGGAR_SESSION` |
-| `saggar status [--json]` | Alias for `saggar list` |
-| `saggar schema [command…]` | Print the clispec v0.2 command schema, optionally narrowed to one command subtree |
-| `saggar capabilities` | Compatibility alias for `saggar schema` |
-| `saggar read [id\|name] [--lines N\|--screen\|--conversation [--turns N]] [--json]` | Read bounded output, or an agent's recent requests and replies, from one terminal |
-| `saggar inspect [id\|name] [--json]` | Inspect current work and resume readiness without returning a transcript |
-| `saggar session [id\|name] [--json]` | Print one terminal's name, presentation, and turbo setting |
-| `saggar session [id\|name] set <name\|presentation\|turbo> <value>` | Change one of those settings; another terminal's name or presentation asks on the Mac first, and arming turbo needs the Settings ▸ CLI switch and never works on the calling terminal |
-| `saggar settings [--json]` / `settings get\|set\|reset <key>` | Read or change app preferences; guarded keys still need the Mac app |
-| `saggar explain [id\|name] [--json]` | Say why a terminal wears its status |
-| `saggar wait [id\|name] [--until <status>…\|--match <text>] [--timeout N] [--json]` | Block until a terminal settles, reaches a status, or prints a line |
-| `saggar focus [id\|name]` | Bring a terminal to the main pane (no target means this one) |
-| `saggar approve` | Answer the permission prompt waiting in this terminal |
-| `saggar resume set [options] -- <command…>` | Attach an untrusted custom resume binding to this terminal |
-| `saggar resume show` | Inspect this terminal's custom resume binding and trust state |
-| `saggar resume clear` | Remove this terminal's custom resume binding |
-| `saggar turns [--json]` | List the agent turns recorded for this terminal, newest first |
-| `saggar <path>` | Add or focus a repo on the project menu; the only verb that can launch saggar |
-| `saggar help` | Print the verbs and flags |
+Use `saggar schema [command…]` for current flags and arguments. See
+[references/commands.md](references/commands.md) for the full command catalog.
+The consent and refusal rules here apply to every verb.
 
 `monitor` and `quick` take the rest of the line, so `saggar monitor npm run dev`
 works without quoting. Quote when spacing matters. `attention` joins its words
